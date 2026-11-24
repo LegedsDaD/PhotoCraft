@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "photocraft",
+  "version": "${version}",
+  "name": "PhotoCraft",
+  "description": "A singleplayer photography expansion with craftable cameras, lenses, filters, stands and photo development.",
+  "authors": ["LegendWorks"],
+  "contact": {
+    "sources": "https://github.com/LegedsDaD/PhotoCraft"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "main": ["com.legendworks.photocraft.PhotoCraft"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "26.3",
+    "java": ">=25",
+    "fabric-api": ">=0.161.0"
+  }
+}
