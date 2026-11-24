@@ -1,0 +1,55 @@
+name: Build PhotoCraft
+
+on:
+  push:
+    branches: [ "**" ]
+    tags: [ "v*" ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '9.6'
+
+      - name: Build PhotoCraft
+        run: gradle build
+
+      - name: Verify and copy remapped mod JAR
+        shell: bash
+        run: |
+          mkdir -p mod
+          JAR="$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*sources*' ! -name '*dev*' | head -n 1)"
+          test -n "$JAR"
+          cp "$JAR" mod/PhotoCraft-1.0.0.jar
+          ls -lh mod/
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: PhotoCraft-1.0.0
+          path: mod/PhotoCraft-1.0.0.jar
+          if-no-files-found: error
+
+      - name: Publish GitHub Release for version tags
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: mod/PhotoCraft-1.0.0.jar
+          generate_release_notes: true
